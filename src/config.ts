@@ -8,7 +8,7 @@ export const NOTE_TAB_PREFIX = '📝';
 export const DEFAULT_SEARCH_URL = 'https://google.com/search';
 
 export const SITES_DATA_URL =
-  'https://gist.githubusercontent.com/chrisminch1/8f60236e8073b95d32f97c9f78c2222f/raw';
+  'https://gist.githubusercontent.com/minchingtonak/97724dbb14bb9321993592b7ead908ad/raw';
 
 export const TASK_UPDATE_DELAY = 500; // ms
 
