@@ -29,4 +29,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
           disable_nojekyll: true
-          cname: bry.alecminch.dev
+          cname: bry-home.alecminch.dev
