@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import DayPicker from 'react-day-picker';
 import styled from 'styled-components';
-import { useGoogleAPI } from './auth';
 import {
   DEFAULT_SEARCH_URL,
   DEFAULT_TAB_TITLE,
@@ -9,7 +7,7 @@ import {
   option,
   SEARCH_TAB_PREFIX,
 } from './config';
-import { getValidURL, useAddTask } from './utils';
+import { getValidURL } from './utils';
 
 const SearchInput = styled.input`
   margin: 0px 2px 2px 2px;
@@ -42,10 +40,6 @@ const SearchInput = styled.input`
   }
 `;
 
-const SearchDatePicker = styled(DayPicker)<{ open: boolean }>`
-  display: ${(props) => (props.open ? 'default' : 'none')} !important;
-`;
-
 export default function SearchBar({
   text,
   setText,
@@ -56,10 +50,6 @@ export default function SearchBar({
   action: option<string>;
 }) {
   const input = useRef<HTMLInputElement>(null);
-  const [pickerOpen, setPickerOpen] = useState(false);
-  const [taskText, setTaskText] = useState<option<string>>(null);
-  const { addTask } = useAddTask();
-  const { loggedIn, logOut, logIn } = useGoogleAPI();
 
   // useEffect(() => {
   //   // Clikcing on anything except a link will focus the search bar
@@ -93,39 +83,17 @@ export default function SearchBar({
     };
   }, [updateTitle]);
 
-  useEffect(() => {
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') setPickerOpen(false);
-    });
-  });
-
   return (
     <>
       <form
         id={'action'}
         onSubmit={(e) => {
           e.preventDefault();
-
-          if (/^\/t(ask)?/.test(text)) {
-            const matches = text.match(/[\s].*/g);
-            setTaskText(matches !== null ? matches[0].trim() : null);
-            setPickerOpen(true);
-          } else if (/^\/login/.test(text)) {
-            if (loggedIn) return;
-            logIn();
-            setText('');
-          } else if (/^\/logout/.test(text)) {
-            if (!loggedIn) return;
-            logOut();
-            setText('');
-            window.localStorage.clear();
-          } else {
-            window.location.assign(
-              action !== null
-                ? getValidURL(action)
-                : `${DEFAULT_SEARCH_URL}?q=${encodeURIComponent(text)}`,
-            );
-          }
+          window.location.assign(
+            action !== null
+              ? getValidURL(action)
+              : `${DEFAULT_SEARCH_URL}?q=${encodeURIComponent(text)}`,
+          );
         }}
       >
         <SearchInput
@@ -136,18 +104,7 @@ export default function SearchBar({
           autoComplete="off"
           onChange={(e) => setText(e.target.value)}
         />
-      </form>
-      <SearchDatePicker
-        selectedDays={new Date()}
-        open={pickerOpen}
-        onDayClick={(d) => {
-          if (taskText !== null && d) {
-            addTask({ title: taskText, due: d.toISOString() });
-            setText('');
-          }
-          setPickerOpen(false);
-        }}
-      />
+       </form>
     </>
   );
 }
